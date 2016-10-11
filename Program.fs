@@ -1,7 +1,16 @@
-﻿// Learn more about F# at http://fsharp.org
-// See the 'F# Tutorial' project for more help.
+﻿open Hopac
+
+let doThingAsynchronously (getThingAsynchronously : Async<_>) (delay : Job<unit>) = job {
+    let! result = getThingAsynchronously
+    do! delay
+    return result
+}
 
 [<EntryPoint>]
 let main argv = 
-    printfn "%A" argv
-    0 // return an integer exit code
+    let myResult = async { return 4 }
+    let delay = timeOutMillis 10
+    doThingAsynchronously myResult delay
+        |> run
+        |> printfn "Result was %i"
+    0
